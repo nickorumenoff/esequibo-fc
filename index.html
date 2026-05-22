@@ -5,18 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Esequibo FC</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "98a78758-6682-4999-900a-c096e2f1d1f1",
-      safari_web_id: "web.onesignal.auto.4bf63793-66f2-4d83-98c9-d7c9e724d029",
-      notifyButton: { enable: false },
-      welcomeNotification: { disable: true }
-    });
-  });
-</script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,sans-serif;background:#0d0d0d;color:#eee;min-height:100vh}
@@ -130,11 +119,7 @@ input:focus{border-color:#1a7a3a}
 
 <div id="t-lista" class="sec active">
   <div class="card">
-    <div id="notif-banner" style="display:none;background:#1a1400;border:1px solid #3a2a00;border-radius:8px;padding:10px 14px;margin-bottom:10px;align-items:center;justify-content:space-between">
-    <span style="font-size:13px;color:#f0a500">🔔 Activá las notificaciones para saber cuando abren las inscripciones</span>
-    <button class="btn bsm bgold" onclick="requestNotifPermission()" style="flex-shrink:0;margin-left:10px">Activar</button>
-  </div>
-  <div id="insc-status" style="font-size:12px;padding:6px 10px;border-radius:6px;margin-bottom:6px;text-align:center;background:#1a3a22;color:#4caf50">✅ Inscripciones abiertas</div>
+    <div id="insc-status" style="font-size:12px;padding:6px 10px;border-radius:6px;margin-bottom:6px;text-align:center;background:#1a3a22;color:#4caf50">✅ Inscripciones abiertas</div>
   <div id="countdown-timer" style="display:none;font-size:12px;padding:6px 10px;border-radius:6px;margin-bottom:10px;text-align:center;background:#1a1a00;color:#f0a500;border:1px solid #3a3000;font-family:Oswald,sans-serif;letter-spacing:.5px"></div>
     <div class="slabel">Anotarse a la partida</div>
     <div style="display:flex;gap:8px">
@@ -321,12 +306,7 @@ function renderSection(tab) {
 
 function renderAll() {
   rPlayers();
-  // Show notification banner if permission not granted
-  const notifBanner = document.getElementById('notif-banner');
-  if(notifBanner) {
-    const perm = typeof Notification !== 'undefined' ? Notification.permission : 'denied';
-    notifBanner.style.display = perm === 'granted' ? 'none' : 'flex';
-  }
+
   // Update inscription status banner
   const banner = document.getElementById('insc-status');
   if(banner && st) {
@@ -1439,29 +1419,8 @@ function confirmWhoami() {
   handleComprobanteUpload(playerIdx);
 }
 
-// Send notification via OneSignal
-async function localNotify(title, body) {
-  try {
-    if(window.OneSignal) {
-      // Show local notification if app is in background
-      if(document.hidden && Notification.permission==='granted') {
-        new Notification(title, {body, icon:'/esequibo-fc/icon.png'});
-      }
-    }
-  } catch(e) { console.log('Notify error:', e); }
-}
-
-async function requestNotifPermission() {
-  try {
-    if(window.OneSignalDeferred) {
-      OneSignalDeferred.push(async function(OneSignal) {
-        const opted = await OneSignal.User.PushSubscription.optedIn;
-        if(!opted) {
-          await OneSignal.Slidedown.promptPush();
-        }
-      });
-    }
-  } catch(e) { console.log('OneSignal error:', e); }
+function localNotify(title, body) {
+  // Notifications disabled
 }
 
 // Watch for state changes that trigger notifications
@@ -1483,8 +1442,7 @@ function checkNotifyTriggers(newSt) {
   _prevState = newSt;
 }
 
-// Request notification permission via OneSignal
-setTimeout(requestNotifPermission, 3000);
+
 </script>
 
 <!-- CAP REPLACE MODAL -->
